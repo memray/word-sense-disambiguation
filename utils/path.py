@@ -47,8 +47,10 @@ class WSD_path(object):
         self.MFS_PATH = _ALL_WORDS_BASE_PATH + 'Output_Systems_ALL/MFS_{0}.key'
         self.WNFS_PATH = _ALL_WORDS_BASE_PATH + 'Output_Systems_ALL/WNFirstsense.key'
 
-        self.WORDNET_PATH = '../data/nltk_data/corpora/wordnet'  # version 3.0
-        self.GLOVE_VECTOR = '../data/glove.42B.300d.txt'  # todo: change to yours word2vec path
+        # self.WORDNET_PATH = '../data/nltk_data/corpora/wordnet'  # version 3.0
+        # self.GLOVE_VECTOR = '../data/glove.42B.300d.txt'  # todo: change to yours word2vec path
+        self.WORDNET_PATH = '/home/memray/nltk_data/corpora/wordnet'  # version 3.0
+        self.GLOVE_VECTOR = '/home/memray/Data/glove/glove.42B.300d.txt'  # todo: change to yours word2vec path
 
         if not os.path.exists('../tmp'):
             os.makedirs('../tmp')

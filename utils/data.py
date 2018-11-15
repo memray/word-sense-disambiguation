@@ -181,7 +181,7 @@ def load_all_words_data(data_path, key_path=None, dic_path=None, is_training=Fal
                 id = child.get('id')
                 lemma = child.get('lemma').lower()
                 if '(' in lemma:
-                    print id
+                    print(id)
                 pos = child.get('pos')
                 word = lemma + '#' + pos_dic[pos]
                 if key_path:
@@ -194,9 +194,9 @@ def load_all_words_data(data_path, key_path=None, dic_path=None, is_training=Fal
 
                 context = sent_list[:]
                 if context[i] != lemma:
-                    print '/'.join(context)
-                    print i
-                    print lemma
+                    print('/'.join(context))
+                    print(i)
+                    print(lemma)
                 context[i] = '<target>'
 
                 x = {
@@ -211,7 +211,7 @@ def load_all_words_data(data_path, key_path=None, dic_path=None, is_training=Fal
 
     if is_training:
         poss_list = ['<pad>', '<eos>', '<unk>'] + list(sorted(poss))
-        # print 'Wirting to tmp/pos_dic.pkl:' + ' '.join(poss_list)
+        # print('Wirting to tmp/pos_dic.pkl:' + ' '.join(poss_list))
         poss_map = dict(zip(poss_list, range(len(poss_list))))
         with open('../tmp/pos_dic.pkl', 'wb') as f:
             pickle.dump((poss_map), f)
@@ -255,7 +255,7 @@ def filter_word_and_sense(train_data, test_data, min_sense_freq=1, max_n_sense=4
                     word_to_senses[target_word].append(target_sense)
 
     filtered_word_to_sense = {}
-    for target_word, senses in word_to_senses.iteritems():
+    for target_word, senses in word_to_senses.items():
         senses = sorted(senses, key=lambda s: all_sense_to_id[s])
         senses = senses[:max_n_sense]
         if len(senses) > 1:  # must leave more than one sense
@@ -447,7 +447,7 @@ def convert_to_numeric(data, word_to_id, target_word_to_id, target_sense_to_id,
             target_id = target_word_to_id[target_word]
             senses = target_sense_to_id[target_id]
         except KeyError as e:
-            # print e
+            # print(e)
             continue
 
         if target_sense in senses:  # test will ignore sense not in train, same as data_postprocessing
@@ -670,8 +670,8 @@ def expand_gloss(key, expand_type, n_hyper, n_hypo):
     try:
         lemma = wn.lemma_from_key(key)
     except Exception as e:
-        print e
-        print key
+        print(e)
+        print(key)
         exit(-1)
     synset = lemma.synset()
     if expand_type == 1:  # 'hyper':
