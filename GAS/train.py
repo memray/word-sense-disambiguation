@@ -17,13 +17,13 @@ from utils.data import *
 from utils.glove import *
 from utils import path
 from utils import store_result
-from config import MemNNConfig
-import model
+from GAS.config import MemNNConfig
+import GAS.model as model
 
 _path = path.WSD_path()
 config = MemNNConfig()
-
-os.environ["CUDA_VISIBLE_DEVICES"] = '3,1,2,0'
+os.environ["CUDA_VISIBLE_DEVICES"] = '0'
+# os.environ["CUDA_VISIBLE_DEVICES"] = '3,1,2,0'
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 best_info = {
@@ -91,6 +91,7 @@ def train():
         for batch_id, batch_data in enumerate(batch_generator(True, config.batch_size, train_data, dict_data,
                                                               word_to_id['<pad>'], config.n_step_f, config.n_step_b,
                                                               pad_last_batch=True)):
+            print('::: EPOCH: %d, BATCH_ID: %d :::' % (i, batch_id))
             total_batch += 1
             feeds = feed_dict(batch_data, is_training=True)
             acc_train, loss_train, cuorrect, pred, step, summary, _ = \
@@ -131,6 +132,8 @@ def test(result_path=None):
 
 
 if __name__ == "__main__":
+    from tensorflow.python.client import device_lib
+    print(device_lib.list_local_devices())
 
     print(sys.argv)
 
@@ -239,12 +242,14 @@ if __name__ == "__main__":
         os.makedirs(model_save_dir)
     saver = tf.train.Saver(max_to_keep=5)
 
-    pickle.dump(config, open(model_save_dir + 'conf.pkl', 'w'))
+    pickle.dump(config, open(model_save_dir + 'conf.pkl', 'wb'))
 
     # === Create session
     tf_config = tf.ConfigProto()
+    tf_config.log_device_placement = True
+    tf_config.allow_soft_placement = True
     tf_config.gpu_options.allow_growth = True  # allocate dynamically
-    tf_config.gpu_options.per_process_gpu_memory_fraction = 0.5  # maximun alloc gpu50% of MEM
+    # tf_config.gpu_options.per_process_gpu_memory_fraction = 0.5  # maximun alloc gpu50% of MEM
     session = tf.Session(config=tf_config)
     session.run(tf.global_variables_initializer())
     summary_train_writer.add_graph(session.graph)

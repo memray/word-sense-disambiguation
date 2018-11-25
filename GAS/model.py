@@ -64,14 +64,13 @@ class Model:
         global_initializer = tf.random_uniform_initializer(-0.1, 0.1)
         lstm_initializer = tf.orthogonal_initializer()
 
-        with tf.device('/cpu:0'):
-            with tf.variable_scope('word_emb'):
-                if config.use_pre_trained_embedding:
-                    word_embeddings = tf.get_variable('word_embeddings', initializer=init_word_vecs, trainable=False)
-                else:
-                    word_embeddings = tf.get_variable('word_embeddings',
-                                                      shape=[config.vocab_size, embedding_size],
-                                                      initializer=global_initializer, trainable=True)
+        with tf.variable_scope('word_emb'):
+            if config.use_pre_trained_embedding:
+                word_embeddings = tf.get_variable('word_embeddings', initializer=init_word_vecs, trainable=False)
+            else:
+                word_embeddings = tf.get_variable('word_embeddings',
+                                                  shape=[config.vocab_size, embedding_size],
+                                                  initializer=global_initializer, trainable=True)
 
         n_senses_sorted_by_target_id = [n_senses_from_target_id[target_id] for target_id
                                         in range(len(n_senses_from_target_id))]
@@ -113,6 +112,7 @@ class Model:
             s_cell_bw = lstm_cell(n_units)  # backward
             inputs_s = tf.nn.embedding_lookup(word_embeddings, self.inputs)  # [batch_size, n_step, dim]
             inputs_s = tf.nn.dropout(inputs_s, keep_prob)
+
             s_outputs, s_final_state = tf.nn.bidirectional_dynamic_rnn(s_cell_fw,
                                                                        s_cell_bw,
                                                                        inputs_s,
@@ -129,6 +129,7 @@ class Model:
             inputs_g = tf.reshape(self.glosses, [batch_size * max_n_sense, max_gloss_words])
             inputs_g = tf.nn.embedding_lookup(word_embeddings, inputs_g)  # [batch_size*max_n_sense, max_words, dim]
             inputs_g = tf.nn.dropout(inputs_g, self.keep_prob)
+
             sequence_length = tf.reshape(self.glosses_lenth, [batch_size * max_n_sense])
             g_outputs, g_final_states = tf.nn.bidirectional_dynamic_rnn(g_cell_fw,
                                                                         g_cell_bw,

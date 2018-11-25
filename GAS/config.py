@@ -35,8 +35,10 @@ class MemNNConfig(object):
 
         # parameters for train
         self.n_epochs = 50
-        self.batch_size = 8
-        self.lr_start = 0.001
+        # self.batch_size = 8
+        # self.lr_start = 0.001
+        self.batch_size = 32
+        self.lr_start = 0.01
         self.lambda_l2_reg = 0  # L2 regularization
         self.momentum = 0.1
         self.max_grad_norm = 10  # clip gradient

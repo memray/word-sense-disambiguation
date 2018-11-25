@@ -41,12 +41,12 @@ def fill_with_gloves(word_to_id, path=None, emb_size=None, vocab_size=None, word
     n_words = len(word_to_id)
 
     if emb_size is None:
-        emb_size = len(wordvecs[wordvecs.keys()[0]])
+        emb_size = len(wordvecs[list(wordvecs.keys())[0]])
 
     res = np.zeros([n_words, emb_size], dtype=np.float32)
     n_not_found = 0
     words_notin = set()
-    for word, id in word_to_id.iteritems():
+    for word, id in word_to_id.items():
         if '#' in word:
             word = word.split('#')[0]   # Remove pos tag
 
@@ -68,7 +68,7 @@ def fill_with_gloves(word_to_id, path=None, emb_size=None, vocab_size=None, word
             n_not_found += 1
             res[id, :] = np.random.normal(0.0, 0.1, emb_size)
     print('n words not found in glove word vectors: ' + str(n_not_found))
-    open('../tmp/word_not_in_glove.txt','w').write((u'\n'.join(words_notin)).encode('utf-8'))
+    open('../tmp/word_not_in_glove.txt','w').write('\n'.join(words_notin))
 
     return res
 
